@@ -1,0 +1,32 @@
+{
+  "name": "node-artemis-lib",
+  "version": "0.1.0",
+  "description": "Low-level interface library to Artemis SBS game servers/clients",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ivansanchez/node-artemis-lib.git"
+  },
+  "keywords": [
+    "artemis",
+    "space",
+    "bridge",
+    "simulator",
+    "game",
+    "interface"
+  ],
+  "author": "Iván Sánchez Ortega <ivan@sanchezortega.es>",
+  "license": "Beerware",
+  "bugs": {
+    "url": "https://github.com/ivansanchez/node-artemis-lib/issues"
+  },
+  "homepage": "https://github.com/ivansanchez/node-artemis-lib",
+  "dependencies": {
+    "babel": "^5.1.11",
+    "node-bitarray": "0.0.2"
+  },
+  "engines": {
+    "node": ">=0.10.29",
+    "iojs": ">=1.0.0"
+  }
+}

@@ -1,0 +1,47 @@
+
+# node-artemis-lib
+
+The bastard child of [artemis-glitter](https://github.com/IvanSanchez/artemis-glitter) and [node-artemis](https://github.com/mrfishie/node-artemis), now in reusable library form.
+
+
+
+**Heavy work in progress!! Some packets are not parsed yet, interface is not stable, lotsa stuff to do.**
+
+
+
+
+The goal is to abstract the low-level details of the Artemis Space Bridge Simulator protocol, exposing a subclass of `net.Socket`, called `artemisSocket` (and `net.Server`, called `artemisServer`).
+
+Ideally, splitting the network library will allow programs and scripts to switch the version of `node-artemis-lib` for newer versions of ArtemisSBS and still work seamlessly even when the protocol changes.
+
+This does **not** implement a world model, socket reconnection, packet forwarding, or game logic. That is left for the code using this library.
+
+
+## API
+
+In addition to the `net` functionality, the `artemisSocket`s implement:
+
+### event: `packet` event
+
+Each time a known game packet is received (and parsed), this event is emmited. The callback should expect two parameters: `packetName` and `packetData`.
+
+`packetName` is self-explaining. `packetData` is a plain javascript object, and its structure mimics the definition in the `packet-defs.js` file. `packetData`s may include arrays and plain objects inside, as per their definitions.
+
+
+### `send(str packetName, object packetData, bool fromServer)`
+
+Kinda the inverse operation of the `packet` event. Given a packet name and payload, will pack it in a binary structure and send it down the wire.
+
+Set `fromServer` to false if you are using `artemisSocket` to connect to a game server; this should be true only if you're implementing game server-like or proxy-like functionality.
+
+
+
+
+
+## Legalese
+
+Beerware license, see LICENSE file. 
+
+Kudos to [Artemis Spaceship Bridge Simulator](http://www.artemis.eochu.com/), [ArtClientLib packet protocol](https://github.com/rjwut/ArtClientLib/wiki/Artemis-Packet-Protocol) and [node-artemis](https://github.com/mrfishie/node-artemis).
+
+
