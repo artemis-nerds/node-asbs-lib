@@ -1,6 +1,6 @@
 
-
-var net = require("net");
+// var net = require("net");
+import Socket from net;
 
 var packetHeader = require('./packet-header');
 var packetDefs   = require('./packet-defs');
@@ -9,7 +9,7 @@ var packetDefsByName = packetDefs.packetDefsByName;
 var dataTypes    = require('./data-types');
 
 
-class artemisSocket extends net.Socket {
+class artemisSocket extends Socket {
 
 	constructor(options) {
 		super(options);
@@ -175,12 +175,11 @@ class artemisSocket extends net.Socket {
 
 		this.write( buffer.slice(0,length) );
 	}
-	
-	
-	
-	
+
+
+
 	// Called when there has been a parsing error, so we can keep on guessing how the
-	//   protocol looks like.
+	// protocol looks like.
 	_debugBuffer(buffer) {
 		var str = '';
 		for (var i = 0; i<buffer.length; i++) {
@@ -191,10 +190,10 @@ class artemisSocket extends net.Socket {
 			str += hex + ' ';
 		}
 		console.log('Whole packet was:', str);
-// 		console.log('Whole packet was:', buffer.toString('hex'));
+// console.log('Whole packet was:', buffer.toString('hex'));
 	}
-	
-	
+
+
 }
 
 
