@@ -184,13 +184,13 @@ var packetDefsByName = {
 		subtype: 0,
 		fields: type.struct({
 			// Possible values for "priority":
-			// 0: We will surrender
+			// 0: We will surrender / We are invincible!
 			// 1:
 			// 2:
 			// 3:
 			// 4: We're under attack
 			// 5: Docking crew ready
-			// 6: We've produced another missile
+			// 6: We've produced another missile / status report
 			// 7: Help us help you
 			// 8: Will you surrender?!
 			priority: type.int32,
@@ -503,7 +503,7 @@ var packetDefsByName = {
 		subtype: 0x05,	// 5
 		fields: type.struct({
 			id: type.int32,
-			data: type.bitmapstruct(7,{
+			data: type.bitmapstruct(6,{
 				shipName:    type.string,
 				unknown02:   type.float,
 				rudder:      type.float,
@@ -645,13 +645,16 @@ var packetDefsByName = {
 		type: 0x80803df9,
 		subtypeLength: 1,
 		subtype: 0x0a,	// 10
-		fields: type.bitmapstruct(1,{
-			posX: type.float,
-			posY: type.float,
-			posZ: type.float,
-			colorR: type.float,
-			colorG: type.float,
-			colorB: type.float
+		fields: type.struct({
+			id: type.int32,
+			data: type.bitmapstruct(1,{
+				posX: type.float,
+				posY: type.float,
+				posZ: type.float,
+				colorR: type.float,
+				colorG: type.float,
+				colorB: type.float
+			})
 		})
 	},
 	
@@ -879,7 +882,15 @@ var packetDefsByName = {
 	},
 	
 
-
+	unknownGamePacket: {
+		type: 0xf754c8fe,
+		subtypeLength: 4,
+		subtype: 0x08,	// 8
+		fields: type.struct({
+			unknown: type.int32
+		})
+	},
+	
 	
 	skybox: {
 		type: 0xf754c8fe,
@@ -1081,21 +1092,21 @@ var packetDefsByName = {
 	unloadTube: {
 		type: 0x4c821d3c,
 		subtypeLength: 4,
-		subtype: 0x09,	// 9  //// FIXME: 0x09, or 0x0a?
+		subtype: 0x09,	// 9
 		fields: type.struct({
 			tube: type.int32	// From 0 to 5, depending on ship being piloted
 		})
 	},
 	
 	
-// 	unloadTube: {
-// 		type: 0x4c821d3c,
-// 		subtypeLength: 4,
-// 		subtype: 0x0a,  // 10   //// FIXME
-// 		fields: type.struct({
-// 			unknown01: type.int32	// 0???
-// 		})
-// 	},
+	toggleRedAlert: {
+		type: 0x4c821d3c,
+		subtypeLength: 4,
+		subtype: 0x0a,  // 10
+		fields: type.struct({
+			unknown01: type.int32	// 0???
+		})
+	},
 	
 	
 	setBeamFrequency: {

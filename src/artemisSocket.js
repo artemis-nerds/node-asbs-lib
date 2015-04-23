@@ -15,8 +15,6 @@ class artemisSocket extends net.Socket {
 	constructor(options) {
 		super(options);
 
-		console.log(options);
-
 		this._buffer = null;
 		this.on('data',this._parseData);
 	}
@@ -105,23 +103,8 @@ class artemisSocket extends net.Socket {
 				return this._parseData( remainingBuffer );
 			}
 
-			/// FIXME: Do stuff with the received packet!!
-
-			// Display "interesting" packets on console.
-			if (packetName !== 'noUpdate'   &&
-				packetName !== 'upgrades'   &&
-				packetName !== 'weapons'    &&
-				packetName !== 'playerShip' &&
-				true
-			) {
-
-
-				console.log(packetName, packet);
-
-			}
-
 			this.emit(packetName, packet);
-
+			this.emit('packet', packetName, packet);
 		}
 
 

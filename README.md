@@ -37,6 +37,13 @@ Set `fromServer` to false if you are using `artemisSocket` to connect to a game 
 
 
 
+## Examples
+
+There are a few example scripts in the `examples/` directory. They are some of the simplest things that can be performed with the library, pretty small and commented.
+
+Note that these examples do NOT handle socket reconnections and will fail if you don't have a game running in localhost.
+
+
 
 ## Legalese
 
