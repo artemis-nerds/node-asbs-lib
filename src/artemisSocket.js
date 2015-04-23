@@ -1,6 +1,7 @@
+'use strict';
+
 
 var net = require("net");
-// import Socket from "net";
 
 var packetHeader = require('./packet-header');
 var packetDefs   = require('./packet-defs');
@@ -9,7 +10,7 @@ var packetDefsByName = packetDefs.packetDefsByName;
 var dataTypes    = require('./data-types');
 
 
-class artemisSocket extends Socket {
+class artemisSocket extends net.Socket {
 
 	constructor(options) {
 		super(options);
