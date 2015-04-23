@@ -1,13 +1,11 @@
 
-
-require("babel/register");
-
+var dir = './lib';
 
 
 module.exports = {
 
-	artemisSocket: require("./lib/artemisSocket"),
-// 	artemisServer: require("./lib/artemisServer")
+	artemisSocket: require(dir + "/artemisSocket"),
+// 	artemisServer: require(dir + "/artemisServer")
 
 };
 

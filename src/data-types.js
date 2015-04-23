@@ -284,7 +284,7 @@ class StaticSizeArray {
 	}
 }
 
-export function staticsizearray(length, fields) {return new StaticSizeArra(length, fields);}
+export function staticsizearray(length, fields) {return new StaticSizeArray(length, fields);}
 
 
 

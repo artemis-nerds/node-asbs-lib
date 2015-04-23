@@ -1,6 +1,6 @@
 
-// var net = require("net");
-import Socket from net;
+var net = require("net");
+// import Socket from "net";
 
 var packetHeader = require('./packet-header');
 var packetDefs   = require('./packet-defs');

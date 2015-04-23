@@ -4,3 +4,7 @@ node_modules
 *.kate-swp
 *.old
 npm-debug.log
+lib
+.gobble
+.gobble-build
+.gobble-watch
