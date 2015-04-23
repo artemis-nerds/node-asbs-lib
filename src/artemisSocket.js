@@ -100,7 +100,7 @@ class Socket extends net.Socket {
 			try {
 				packet       = packetDefsByType[header.type][subtype].fields.unpack(buffer);
 			} catch(err) {
-				this.emit('error', new ParseError('Could not parse packet (' + header.type.toString(16) + ',' + subtype.toString(16),'): ' + err.message));
+				this.emit('error', new ParseError('Could not parse packet (' + header.type.toString(16) + ',' + subtype.toString(16) + '): ' + err.message));
 				this._debugBuffer(buffer);
 				return this._parseData( remainingBuffer );
 			}

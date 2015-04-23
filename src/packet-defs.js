@@ -129,6 +129,7 @@ var packetDefsByName = {
 		subtypeLength: 0,
 		subtype: 0,
 		fields: type.struct({
+			unknown01: type.int8,
 			nodes: type.byteboundarray(0xff,{
 				x:      type.int8,
 				y:      type.int8,
@@ -221,7 +222,7 @@ var packetDefsByName = {
 			impactX:   type.float,
 			impactY:   type.float,
 			impactZ:   type.float,
-			unknown12: type.int8
+			unknown12: type.int32
 		})
 	},
 	
@@ -670,7 +671,7 @@ var packetDefsByName = {
 				posX:         type.float,
 				posY:         type.float,
 				posZ:         type.float,
-				speedX:       type.string,
+				speedX:       type.int32,
 				speedY:       type.int32,
 				speedZ:       type.int32,
 				ordnanceType: type.int32,	// Std, Nuke, Mine, EMP
@@ -812,15 +813,19 @@ var packetDefsByName = {
 	
 	
 	
-	gameUnpaused: {
+	// Related to deleting entities from the worldmodel
+	unknownPacket00: {
 		type: 0xf754c8fe,
 		subtypeLength: 4,
 		subtype: 0x00,	// 0
-		fields: type.struct({})
+		fields: type.struct({
+			unknown01: type.int32,
+			unknown02: type.int32
+		})
 	},
 	
 	
-	gamePaused: {
+	unknownPacket01: {
 		type: 0xf754c8fe,
 		subtypeLength: 4,
 		subtype: 0x01,	// 1
@@ -842,7 +847,9 @@ var packetDefsByName = {
 		type: 0xf754c8fe,
 		subtypeLength: 4,
 		subtype: 0x04,	// 4
-		fields: type.struct({})
+		fields: type.struct({
+			paused: type.int32
+		})
 	},
 	
 	

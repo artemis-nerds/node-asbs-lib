@@ -19,11 +19,18 @@ mySock.on('error', function(err) {
 
 mySock.on('packet', function(packetName, packet){
 	if (packetName === 'playerShip' ||
-	    packetName === 'npc' ||
-	    packetName === 'whale' ||
-	    packetName === 'intel' ||
+	    packetName === 'npc'     ||
+	    packetName === 'mine'    ||
+	    packetName === 'nebula'  ||
+	    packetName === 'asteroid'||
+	    packetName === 'anomaly' ||
+	    packetName === 'drone'   ||
+	    packetName === 'whale'   ||
+	    packetName === 'intel'   ||
 	    packetName === 'weapons' ||
 	    packetName === 'upgrades' ||
+	    packetName === 'damConInfo' ||
+	    packetName === 'beamFired' ||
 	    packetName === 'noUpdate')
 		return;
 		
@@ -32,4 +39,13 @@ mySock.on('packet', function(packetName, packet){
 
 mySock.connect({ host: 'localhost', port: 2010 });
 
+
+mySock.send('setPlayerShipIndex', {playerShipIndex: 0 });
+
+mySock.send('setConsole',{console: 0 /* MnScr */ , selected: 1});
+mySock.send('setConsole',{console: 5 /* Comms */ , selected: 1});
+mySock.send('setConsole',{console: 6 /* Data  */ , selected: 1});
+mySock.send('setConsole',{console: 7 /* Obsrv */ , selected: 1});
+mySock.send('setConsole',{console: 8 /* Captn */ , selected: 1});
+mySock.send('setConsole',{console: 9 /* GMstr */ , selected: 1});
 
