@@ -10,11 +10,16 @@ var packetDefsByName = packetDefs.packetDefsByName;
 var dataTypes    = require('./data-types');
 
 
-class artemisSocket extends net.Socket {
+class ParseError extends Error {}
+
+
+
+class Socket extends net.Socket {
 
 	constructor(options) {
 		super(options);
 
+		this._debug = !!options.debug;
 		this._buffer = null;
 		this.on('data',this._parseData);
 	}
@@ -39,14 +44,12 @@ class artemisSocket extends net.Socket {
 		var initialPointer = buffer.pointer;
 		var header = packetHeader.unpack(buffer);
 
-		// 	console.log(header);
-
 		if (header.magic != 0xdeadbeef) {
-			console.error('Bad magic number!!', header.magic);
+			this.emit('error', new ParseError('Bad magic number ' + header.magic));
 			return this._debugBuffer(buffer);;
 		}
 		if (header.packetLength != (header.bytesRemaining + 20)) {
-			console.error('Packet length and remaining bytes mismatch!!');
+			this.emit('error', new ParseError('Packet length and remaining bytes mismatch (' + header.packetLength + '/' + (header.bytesRemaining + 20) + ')'));
 			return this._debugBuffer(buffer);;
 		}
 
@@ -63,7 +66,7 @@ class artemisSocket extends net.Socket {
 		this._buffer = null;
 
 		if (!packetDefsByType.hasOwnProperty( header.type )) {
-			console.warn ('Unknown packet type: ', header.type.toString(16), ' skipping.');
+			this.emit('error', new ParseError('Unknown packet type: ', header.type.toString(16), ' skipping.'));
 			return this._parseData( remainingBuffer );
 		}
 
@@ -86,7 +89,7 @@ class artemisSocket extends net.Socket {
 			}
 
 			if (!packetDefsByType[ header.type ].hasOwnProperty( subtype )) {
-				console.warn ('Unknown packet subtype: ', header.type.toString(16),subtype.toString(16), ' skipping.');
+				this.emit('error', new ParseError('Unknown packet subtype: ', header.type.toString(16),subtype.toString(16), ' skipping.'));
 				buffer.pointer = initialPointer;
 				this._debugBuffer(buffer);
 				return this._parseData( remainingBuffer );
@@ -96,9 +99,8 @@ class artemisSocket extends net.Socket {
 			var packet = null;
 			try {
 				packet       = packetDefsByType[header.type][subtype].fields.unpack(buffer);
-			} catch(e) {
-				console.log('Packet parser: ', packetDefsByType[header.type][subtype]);
-				console.warn ('Could not parse packet (',header.type.toString(16),subtype.toString(16),'): ', e);
+			} catch(err) {
+				this.emit('error', new ParseError('Could not parse packet (' + header.type.toString(16) + ',' + subtype.toString(16),'): ' + err.message));
 				this._debugBuffer(buffer);
 				return this._parseData( remainingBuffer );
 			}
@@ -110,7 +112,7 @@ class artemisSocket extends net.Socket {
 
 		if (buffer.pointer !== initialPointer + header.packetLength) {
 			var bytesRead = buffer.pointer - initialPointer;
-			console.warn('Packet length mismatch! ( expected ' , header.packetLength, ' read ', bytesRead, ')');
+			this.emit('error', new ParseError('Packet length mismatch ( expected ' + header.packetLength + ' read ' + bytesRead + ')'));
 			this._debugBuffer(buffer);
 		}
 
@@ -123,7 +125,7 @@ class artemisSocket extends net.Socket {
 
 	send(packetName, packetData) {
 		if (!packetDefsByName.hasOwnProperty(packetName)) {
-			console.error('Do not know how to pack data for packet named ', packetName);
+			this.emit('error', new ParseError('Do not know how to pack data for packet named ' + packetName));
 			return;
 		}
 		var def = packetDefsByName[packetName];
@@ -165,6 +167,8 @@ class artemisSocket extends net.Socket {
 	// Called when there has been a parsing error, so we can keep on guessing how the
 	// protocol looks like.
 	_debugBuffer(buffer) {
+		if (!this._debug) return;
+		
 		var str = '';
 		for (var i = 0; i<buffer.length; i++) {
 			var hex = buffer.readUInt8(i).toString(16);
@@ -174,7 +178,6 @@ class artemisSocket extends net.Socket {
 			str += hex + ' ';
 		}
 		console.log('Whole packet was:', str);
-// console.log('Whole packet was:', buffer.toString('hex'));
 	}
 
 
@@ -188,4 +191,4 @@ class artemisSocket extends net.Socket {
 
 
 
-module.exports = artemisSocket;
+module.exports = Socket;

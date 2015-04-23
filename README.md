@@ -19,22 +19,29 @@ This does **not** implement a world model, socket reconnection, packet forwardin
 
 ## API
 
-In addition to the `net` functionality, the `artemisSocket`s implement:
+In addition to the `net` functionality, the `node-artemis-lib.Socket`s implement:
 
-### event: `packet` event
+### event: `packet`
 
 Each time a known game packet is received (and parsed), this event is emmited. The callback should expect two parameters: `packetName` and `packetData`.
 
 `packetName` is self-explaining. `packetData` is a plain javascript object, and its structure mimics the definition in the `packet-defs.js` file. `packetData`s may include arrays and plain objects inside, as per their definitions.
 
 
-### `send(str packetName, object packetData, bool fromServer)`
+### `send()`
+
+`send(str packetName, object packetData, bool fromServer)`
 
 Kinda the inverse operation of the `packet` event. Given a packet name and payload, will pack it in a binary structure and send it down the wire.
 
 Set `fromServer` to false if you are using `artemisSocket` to connect to a game server; this should be true only if you're implementing game server-like or proxy-like functionality.
 
 
+### event: `error`
+
+An `node-artemis-lib.Socket` is a subclass of EventEmitter and, as such, instead of `throw`ing errors it emits `error` events.
+
+Besides the errors from `net.Socket`, problems when parsing Artemis SBS packets will emit an `error` event with a `ParseError` as a parameter.
 
 
 ## Examples

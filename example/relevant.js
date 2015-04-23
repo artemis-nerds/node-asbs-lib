@@ -7,8 +7,15 @@ var artemisSocket = artemisLib.Socket;
 
 
 
+// debug:true will print partially parsed packets.
+var mySock = new artemisSocket({debug: true});
 
-var mySock = new artemisSocket();
+
+// The Socket will throw errors when parsing a packet fails
+mySock.on('error', function(err) {
+	console.error(err);
+});
+
 
 mySock.on('packet', function(packetName, packet){
 	if (packetName === 'playerShip' ||
