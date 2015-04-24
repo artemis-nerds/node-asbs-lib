@@ -67,7 +67,7 @@ class Socket extends net.Socket {
 		this._buffer = null;
 
 		if (!packetDefsByType.hasOwnProperty( header.type )) {
-			this.emit('warn', new ParseError('Unknown packet type: ', header.type.toString(16), ' skipping.', buffer));
+			this.emit('unparsed', new ParseError('Unknown packet type: ', header.type.toString(16), ' skipping.', buffer));
 			return this._parseData( remainingBuffer );
 		}
 
@@ -90,7 +90,7 @@ class Socket extends net.Socket {
 			}
 
 			if (!packetDefsByType[ header.type ].hasOwnProperty( subtype )) {
-				this.emit('warn', new ParseError('Unknown packet subtype: ', header.type.toString(16),subtype.toString(16), ' skipping.', buffer));
+				this.emit('unparsed', new ParseError('Unknown packet subtype: ', header.type.toString(16),subtype.toString(16), ' skipping.', buffer));
 				buffer.pointer = initialPointer;
 				return this._parseData( remainingBuffer );
 			}
@@ -111,7 +111,7 @@ class Socket extends net.Socket {
 
 		if (buffer.pointer !== initialPointer + header.packetLength) {
 			var bytesRead = buffer.pointer - initialPointer;
-			this.emit('warn', new ParseError('Packet length mismatch ( expected ' + header.packetLength + ' read ' + bytesRead + ')', buffer));
+			this.emit('unparsed', new ParseError('Packet length mismatch ( expected ' + header.packetLength + ' read ' + bytesRead + ')', buffer));
 		}
 
 		return this._parseData( remainingBuffer );
