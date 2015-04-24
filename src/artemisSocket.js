@@ -8,11 +8,7 @@ var packetDefs   = require('./packet-defs');
 var packetDefsByType = packetDefs.packetDefsByType;
 var packetDefsByName = packetDefs.packetDefsByName;
 var dataTypes    = require('./data-types');
-
-
-class ParseError extends Error {}
-
-
+var ParseError	 = require('./parseError');
 
 class Socket extends net.Socket {
 
@@ -21,7 +17,14 @@ class Socket extends net.Socket {
 
 		this._debug = !!options.debug;
 		this._buffer = null;
-		this.on('data',this._parseData);
+		this.on('data', this._parseData);
+
+		this.on('error', this._onError);
+	}
+
+	_onError() {
+		// Close the connection for 'critical' errors
+		this.close();
 	}
 
 
@@ -45,12 +48,10 @@ class Socket extends net.Socket {
 		var header = packetHeader.unpack(buffer);
 
 		if (header.magic != 0xdeadbeef) {
-			this.emit('error', new ParseError('Bad magic number ' + header.magic));
-			return this._debugBuffer(buffer);;
+			return this.emit('error', new ParseError('Bad magic number ' + header.magic, buffer));
 		}
 		if (header.packetLength != (header.bytesRemaining + 20)) {
-			this.emit('error', new ParseError('Packet length and remaining bytes mismatch (' + header.packetLength + '/' + (header.bytesRemaining + 20) + ')'));
-			return this._debugBuffer(buffer);;
+			return this.emit('error', new ParseError('Packet length and remaining bytes mismatch (' + header.packetLength + '/' + (header.bytesRemaining + 20) + ')', buffer));
 		}
 
 		// Packet too short, rewind and wait for more data to come in.
@@ -66,7 +67,7 @@ class Socket extends net.Socket {
 		this._buffer = null;
 
 		if (!packetDefsByType.hasOwnProperty( header.type )) {
-			this.emit('error', new ParseError('Unknown packet type: ', header.type.toString(16), ' skipping.'));
+			this.emit('warn', new ParseError('Unknown packet type: ', header.type.toString(16), ' skipping.', buffer));
 			return this._parseData( remainingBuffer );
 		}
 
@@ -89,9 +90,8 @@ class Socket extends net.Socket {
 			}
 
 			if (!packetDefsByType[ header.type ].hasOwnProperty( subtype )) {
-				this.emit('error', new ParseError('Unknown packet subtype: ', header.type.toString(16),subtype.toString(16), ' skipping.'));
+				this.emit('warn', new ParseError('Unknown packet subtype: ', header.type.toString(16),subtype.toString(16), ' skipping.', buffer));
 				buffer.pointer = initialPointer;
-				this._debugBuffer(buffer);
 				return this._parseData( remainingBuffer );
 			}
 
@@ -100,8 +100,7 @@ class Socket extends net.Socket {
 			try {
 				packet       = packetDefsByType[header.type][subtype].fields.unpack(buffer);
 			} catch(err) {
-				this.emit('error', new ParseError('Could not parse packet (' + header.type.toString(16) + ',' + subtype.toString(16) + '): ' + err.message));
-				this._debugBuffer(buffer);
+				this.emit('error', new ParseError('Could not parse packet (' + header.type.toString(16) + ',' + subtype.toString(16) + '): ' + err.message, buffer));
 				return this._parseData( remainingBuffer );
 			}
 
@@ -112,8 +111,7 @@ class Socket extends net.Socket {
 
 		if (buffer.pointer !== initialPointer + header.packetLength) {
 			var bytesRead = buffer.pointer - initialPointer;
-			this.emit('error', new ParseError('Packet length mismatch ( expected ' + header.packetLength + ' read ' + bytesRead + ')'));
-			this._debugBuffer(buffer);
+			this.emit('warn', new ParseError('Packet length mismatch ( expected ' + header.packetLength + ' read ' + bytesRead + ')', buffer));
 		}
 
 		return this._parseData( remainingBuffer );
