@@ -18,6 +18,7 @@ mySock.on('error', function(err) {
 
 
 mySock.on('packet', function(packetName, packet){
+	// Ignore common packets.
 	if (packetName === 'playerShip' ||
 	    packetName === 'npc'     ||
 	    packetName === 'mine'    ||

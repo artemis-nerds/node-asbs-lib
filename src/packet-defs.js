@@ -978,6 +978,16 @@ var packetDefsByName = {
 			capture: type.int8
 		})
 	},
+
+
+	setPerspective: {
+		type: 0xf754c8fe,
+		subtypeLength: 4,
+		subtype: 0x12,	// 18
+		fields: type.struct({
+			thirdPerson: type.int32
+		})
+	},
 	
 	
 	
@@ -1385,6 +1395,21 @@ var packetDefsByName = {
 		fields: type.struct({
 			bearing: type.float,	// From 0.0 to 1.0. (Bearing from 0 to 360 divided by 360)
 			distance: type.float	// From 0.0 to 1.0. (1.0 means 50K units)
+		})
+	},
+
+
+
+	// Used by the weapons console when firing in manual mode.
+	fireBeam: {
+		type: 0xc2bee72e,
+		subtypeLength: 0,
+		subtype: 0x00,
+		fields: type.struct({
+			target: type.int32,	// ID of the entity being fired at
+			impactX: type.float,
+			impactY: type.float,
+			impactZ: type.float
 		})
 	},
 	
