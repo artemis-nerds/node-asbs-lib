@@ -27,7 +27,6 @@ Each time a known game packet is received (and parsed), this event is emmited. T
 
 `packetName` is self-explaining. `packetData` is a plain javascript object, and its structure mimics the definition in the `packet-defs.js` file. `packetData`s may include arrays and plain objects inside, as per their definitions.
 
-
 ### `send()`
 
 `send(str packetName, object packetData, bool fromServer)`
@@ -41,7 +40,11 @@ Set `fromServer` to false if you are using `artemisSocket` to connect to a game 
 
 An `node-artemis-lib.Socket` is a subclass of EventEmitter and, as such, instead of `throw`ing errors it emits `error` events.
 
-Besides the errors from `net.Socket`, problems when parsing Artemis SBS packets will emit an `error` event with a `ParseError` as a parameter.
+Besides the errors from `net.Socket`, problems when parsing Artemis SBS packets will emit an `error` event with a `ParseError` as a parameter. As with `net.Socket`, this event will cause the socket to close.
+
+### event: `unparsed`
+
+Similar to the `error` event, but used for recoverable errors that shouldn't cause the socket to close, like a packet length mismatch, body parse error, etc. A `ParseError` will be provided as a parameter.
 
 
 ## Examples
