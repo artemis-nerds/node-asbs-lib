@@ -18,13 +18,6 @@ class Socket extends net.Socket {
 		this._debug = !!options.debug;
 		this._buffer = null;
 		this.on('data', this._parseData);
-
-		this.on('error', this._onError);
-	}
-
-	_onError() {
-		// Close the connection for 'critical' errors
-		this.close();
 	}
 
 
