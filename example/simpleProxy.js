@@ -33,9 +33,11 @@ asbsServer.on('connection', function(conn){
 	// These four packets are the bare minimum required for clients 
 	//   to think that this is a server.
 	
-	// The welcome message cannot be modified, or else clients will
+	// The welcome message can be modified, but it has to be the same
+	//   length as the original one, or else clients will
 	//   reject this as a game server.
-	conn.send('welcome', {str: 'You have connected to Thom Robertson\'s Artemis Bridge Simulator. Please connect with an authorized game client.'}, true);
+	conn.send('welcome', {str: "This is IvanSanchez's example of a Artemis Space Bridge Simulator proxy. Welcome.                              "}, true);
+// 	conn.send('welcome', {str: "You have connected to Thom Robertson's Artemis Bridge Simulator. Please connect with an authorized game client."}, true);
 	conn.send('version', {
 		unknown01: 0x04ec,
 		unknown02: 0x40000000,
