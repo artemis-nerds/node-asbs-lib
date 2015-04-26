@@ -1,12 +1,19 @@
 
-// A simple script used during development to output game packets,  but skipping those which are too common. Useful to debug unknown values.
+// A simple naïve proxy. This demonstrates how a asbs.Server can receive 
+//   clients which will be sent to the game server and viceversa.
 
+// It is *very* naïve and doesn't implement world model, console statuses
+//   at start-up, disconnections/reconnections, et cetera. It's 
+//   here to serve as an example.
 
 var asbsLib = require('../index');
 var net = require('net');
 
+// This will connect the proxy to the game server.
 var asbsSocket = new asbsLib.Socket();
 
+// List of active client connections, used when the proxy needs to fan out
+//   packets from the game server.
 var conns = [];
 
 // The Socket will throw errors when parsing a packet fails
@@ -18,13 +25,10 @@ asbsSocket.on('unparsed', function(err) {
 });
 
 
+// This will connect the clients to the proxy.
 var asbsServer = new asbsLib.Server();
 
 asbsServer.on('connection', function(conn){
-	
-// 	console.log('client connected: ', conn);
-	console.log('client is a net.Socket: ', conn instanceof net.Socket);
-	console.log('client is a asbs.Socket: ', conn instanceof asbsLib.Socket);
 	
 	// These four packets are the bare minimum required for clients 
 	//   to think that this is a server.
@@ -63,6 +67,7 @@ asbsServer.on('connection', function(conn){
 		{ driveType: 0, shipType: 0, unknown03: 1, name: 'Ceres' },
 		{ driveType: 0, shipType: 0, unknown03: 1, name: 'Diana' } ]
 	, true);
+
 	
 	conn.on('packet', function(n,d) {
 		console.log('Packet from client, proxying to game server: ',n,d);
@@ -81,7 +86,7 @@ asbsServer.listen(2010);
 
 asbsSocket.on('packet', function(n, d){
 	// This is gonna be *very* verbose.
-	console.log('Packet from game server, proxying to all clients: ',n,d);
+	console.log('Packet from game server, fanning out to all clients: ',n,d);
 	for (var i in conns) {
 		conns[i].send(n, d, true);
 	}

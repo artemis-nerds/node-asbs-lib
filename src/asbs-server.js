@@ -6,9 +6,9 @@ var util = require('util');
 var asbsSocket = require('./asbs-socket');
 
 
-
+// Extends a plain net.Socket by adding properties
+//   and methods during run-time. 
 function decoratePlainSocket(sock) {
-	
 	sock._parseData   = asbsSocket.prototype._parseData;
 	sock.send         = asbsSocket.prototype.send;
 	sock._debugBuffer = asbsSocket.prototype._debugBuffer;
@@ -24,14 +24,6 @@ function decoratePlainSocket(sock) {
 //   node TLS code.
 
 function Server(/* [options], listener */) {
-	var options, listener;
-// 	if (util.isObject(arguments[0])) {
-// 		options = arguments[0];
-// 		listener = arguments[1];
-// 	} else if (util.isFunction(arguments[0])) {
-// 		options = {};
-// 		listener = arguments[0];
-// 	}
 
 	if (!(this instanceof Server)) return new Server(options, listener);
 
