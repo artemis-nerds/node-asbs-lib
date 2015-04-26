@@ -15,7 +15,6 @@ class Socket extends net.Socket {
 	constructor(options) {
 		super(options);
 
-		this._debug = !!options.debug;
 		this._buffer = null;
 		this.on('data', this._parseData);
 	}
@@ -114,7 +113,7 @@ class Socket extends net.Socket {
 
 
 
-	send(packetName, packetData) {
+	send(packetName, packetData, fromServer) {
 		if (!packetDefsByName.hasOwnProperty(packetName)) {
 			this.emit('error', new ParseError('Do not know how to pack data for packet named ' + packetName));
 			return;
@@ -135,7 +134,7 @@ class Socket extends net.Socket {
 		var header = packetHeader.pack(buffer, {
 			magic: 0xdeadbeef,
 			packetLength: length,
-			origin: 2,	// 2 = "from client"
+			origin: fromServer ? 1 : 2,	// 1 = "from game server", 2 = "from client"
 			bytesRemaining: length - 20,
 			type: def.type
 		});
@@ -158,8 +157,6 @@ class Socket extends net.Socket {
 	// Called when there has been a parsing error, so we can keep on guessing how the
 	// protocol looks like.
 	_debugBuffer(buffer) {
-		if (!this._debug) return;
-		
 		var str = '';
 		for (var i = 0; i<buffer.length; i++) {
 			var hex = buffer.readUInt8(i).toString(16);
@@ -170,7 +167,6 @@ class Socket extends net.Socket {
 		}
 		console.log('Whole packet was:', str);
 	}
-
 
 }
 

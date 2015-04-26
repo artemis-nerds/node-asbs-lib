@@ -277,7 +277,7 @@ class StaticSizeArray {
 		return value;
 	}
 
-	pack(buffer) {
+	pack(buffer, data) {
 		for (var i = 0; i < this._length; i++) {
 			this._struct.pack(buffer, data[i+1] || {});
 		}
