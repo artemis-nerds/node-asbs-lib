@@ -204,6 +204,24 @@ var packetDefsByName = {
 	
 	
 	
+	// Sent by comms
+	commsOutgoing: {
+		type: 0xd672c35f,
+		subtypeLength: 0,
+		subtype: 0,
+		fields: type.struct({
+			targetType: type.commsTarget
+			targetId:   type.int32,
+			command:    type.int32,	// See https://github.com/rjwut/ArtClientLib/wiki/Artemis-Packet-Protocol%3A-Enumerations
+			commandId:  type.int32,
+			unknown05:  type.int32
+		})
+	},
+	
+	
+	
+	
+	
 	// Received when a beam weapon has been fired
 	// A beam shot has an ID like any other entities in the world model
 	beamFired: {
@@ -362,7 +380,7 @@ var packetDefsByName = {
 				tubeUsed4:    type.int8,
 				tubeUsed5:    type.int8,
 
-				tubeUsed6:     type.int8,	//// FIXME!!!
+				tubeUsed6:     type.int8,
 				tubeContents1: type.int8,
 				tubeContents2: type.int8,
 				tubeContents3: type.int8,

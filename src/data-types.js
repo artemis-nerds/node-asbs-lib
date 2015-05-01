@@ -2,6 +2,7 @@
 
 // Data types for packet unpacking/packing for the Artemis SBS net protocol.
 
+var enums = require('./data-types');
 
 
 /**
@@ -331,5 +332,41 @@ class ByteBoundArray {
 }
 
 export function byteboundarray(marker, fields) { return new ByteBoundArray(marker,fields); }
+
+
+
+
+/**
+ * An enumerated type. Internally it has a map of keys-values, used to convert string values
+ * into numeric values on the wire (and viceversa).
+ * 
+ * @param {type} Base type
+ * @param {Object} key-value map
+ * @constructor
+ */
+// class _enum {
+// 	constructor(type, map) {
+// 		this._type = type;
+// 		this._map = Object.create(map);
+// 		this._inverseMap = {};
+// 		for (var i in this._map) {
+// 			this._inverseMap[ this._map[i] ] = i;
+// 		}
+// 	}
+// 	
+// 	unpack(buffer) {
+// 		return this._map[ this._type.unpack(buffer) ];
+// 	}
+// 	
+// 	pack(buffer, data) {
+// 		return this._type.pack( this._inverseMap[data] );
+// 	}
+// 	
+// }
+// 
+// 
+// export var beamFrequency8  = new _enum(int8,  enums.beamFrequency);
+// export var beamFrequency32 = new _enum(int32, enums.beamFrequency);
+
 
 

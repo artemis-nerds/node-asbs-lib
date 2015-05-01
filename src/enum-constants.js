@@ -8,6 +8,7 @@ export const beamFrequency = {
 	4: 'E'
 };
 
+// commsTarget as per node-artemis code
 export const entityClass = {
 	0: 'player',
 	1: 'enemy',
