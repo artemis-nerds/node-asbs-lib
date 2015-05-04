@@ -1,6 +1,6 @@
 
 
-var type = require('./data-types');
+var type = require('./data-types').getTypes({'bool': false, 'enum': false});
 
 
 var packetHeader = new (type.struct)({

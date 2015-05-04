@@ -7,8 +7,10 @@ var artemisSocket = artemisLib.Socket;
 
 
 
-// debug:true will print partially parsed packets.
-var mySock = new artemisSocket({debug: true});
+var mySock = new artemisSocket({
+	enum: true,
+	bool: true
+});
 
 
 // The Socket will throw errors when parsing a packet fails
@@ -19,19 +21,20 @@ mySock.on('error', function(err) {
 
 mySock.on('packet', function(packetName, packet){
 	// Ignore common packets.
-	if (packetName === 'playerShip' ||
+	if (
+// 	    packetName === 'playerShip' ||
 	    packetName === 'npc'     ||
-	    packetName === 'mine'    ||
-	    packetName === 'nebula'  ||
-	    packetName === 'asteroid'||
-	    packetName === 'anomaly' ||
-	    packetName === 'drone'   ||
-	    packetName === 'whale'   ||
-	    packetName === 'intel'   ||
-	    packetName === 'weapons' ||
-	    packetName === 'upgrades' ||
-	    packetName === 'damConInfo' ||
-	    packetName === 'beamFired' ||
+// 	    packetName === 'mine'    ||
+// 	    packetName === 'nebula'  ||
+// 	    packetName === 'asteroid'||
+// 	    packetName === 'anomaly' ||
+// 	    packetName === 'drone'   ||
+// 	    packetName === 'whale'   ||
+// 	    packetName === 'intel'   ||
+// 	    packetName === 'weapons' ||
+// 	    packetName === 'upgrades' ||
+// 	    packetName === 'damConInfo' ||
+// 	    packetName === 'beamFired' ||
 	    packetName === 'noUpdate')
 		return;
 		
@@ -43,10 +46,10 @@ mySock.connect({ host: 'localhost', port: 2010 });
 
 mySock.send('setPlayerShipIndex', {playerShipIndex: 0 });
 
-mySock.send('setConsole',{console: 0 /* MnScr */ , selected: 1});
-mySock.send('setConsole',{console: 5 /* Comms */ , selected: 1});
-mySock.send('setConsole',{console: 6 /* Data  */ , selected: 1});
-mySock.send('setConsole',{console: 7 /* Obsrv */ , selected: 1});
-mySock.send('setConsole',{console: 8 /* Captn */ , selected: 1});
-mySock.send('setConsole',{console: 9 /* GMstr */ , selected: 1});
+mySock.send('setConsole',{console: 'mainScreen'     , selected: 1});
+mySock.send('setConsole',{console: 'communications' , selected: 1});
+mySock.send('setConsole',{console: 'data'           , selected: 1});
+mySock.send('setConsole',{console: 'observer'       , selected: 1});
+mySock.send('setConsole',{console: 'captainsMap'    , selected: 1});
+mySock.send('setConsole',{console: 'gameMaster'     , selected: 1});
 

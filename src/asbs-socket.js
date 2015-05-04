@@ -4,16 +4,18 @@
 var net = require("net");
 
 var packetHeader = require('./packet-header');
-var packetDefs   = require('./packet-defs');
-var packetDefsByType = packetDefs.packetDefsByType;
-var packetDefsByName = packetDefs.packetDefsByName;
-var dataTypes    = require('./data-types');
 var ParseError	 = require('./parseError');
 
 class Socket extends net.Socket {
 
 	constructor(options) {
 		super(options);
+		
+		var packetDefs   = require('./packet-defs').getPacketDefs(options);
+		this.packetDefsByType = packetDefs.packetDefsByType;
+		this.packetDefsByName = packetDefs.packetDefsByName;
+
+		this.type = require('./data-types').getTypes(options);
 
 		this._buffer = null;
 		this.on('data', this._parseData);
@@ -58,12 +60,12 @@ class Socket extends net.Socket {
 		var remainingBuffer = buffer.slice(initialPointer + header.packetLength);
 		this._buffer = null;
 
-		if (!packetDefsByType.hasOwnProperty( header.type )) {
+		if (!this.packetDefsByType.hasOwnProperty( header.type )) {
 			this.emit('unparsed', new ParseError('Unknown packet type: ', header.type.toString(16), ' skipping.', buffer));
 			return this._parseData( remainingBuffer );
 		}
 
-		var subtypeLength = packetDefsByType[header.type].subtypeLength;
+		var subtypeLength = this.packetDefsByType[header.type].subtypeLength;
 		var subtype = -1;	// "Subtype not read yet"
 
 
@@ -71,26 +73,26 @@ class Socket extends net.Socket {
 			if (subtypeLength === 0) {
 				subtype = 0;
 			} else if (subtypeLength === 1) {
-				subtype = dataTypes.int8.unpack(buffer);
+				subtype = this.type.int8.unpack(buffer);
 				if (subtype == 0 && buffer.pointer+3 == initialPointer + header.packetLength) {
 					buffer.pointer += 3;	// Run when a multi-subtype packet is received and has 4-byte padding at the end.
 				}
 			} else if (subtypeLength === 2) {
-				subtype = dataTypes.int16.unpack(buffer);
+				subtype = this.type.int16.unpack(buffer);
 			} else if (subtypeLength === 4) {
-				subtype = dataTypes.int32.unpack(buffer);
+				subtype = this.type.int32.unpack(buffer);
 			}
 
-			if (!packetDefsByType[ header.type ].hasOwnProperty( subtype )) {
+			if (!this.packetDefsByType[ header.type ].hasOwnProperty( subtype )) {
 				this.emit('unparsed', new ParseError('Unknown packet subtype: ', header.type.toString(16),subtype.toString(16), ' skipping.', buffer));
 				buffer.pointer = initialPointer;
 				return this._parseData( remainingBuffer );
 			}
 
-			var packetName = packetDefsByType[header.type][subtype].name;
+			var packetName = this.packetDefsByType[header.type][subtype].name;
 			var packet = null;
 			try {
-				packet       = packetDefsByType[header.type][subtype].fields.unpack(buffer);
+				packet       = this.packetDefsByType[header.type][subtype].fields.unpack(buffer);
 			} catch(err) {
 				this.emit('unparsed', new ParseError('Could not parse packet (' + header.type.toString(16) + ',' + subtype.toString(16) + '): ' + err.message, buffer));
 				return this._parseData( remainingBuffer );
@@ -114,11 +116,11 @@ class Socket extends net.Socket {
 
 
 	send(packetName, packetData, fromServer) {
-		if (!packetDefsByName.hasOwnProperty(packetName)) {
+		if (!this.packetDefsByName.hasOwnProperty(packetName)) {
 			this.emit('error', new ParseError('Do not know how to pack data for packet named ' + packetName));
 			return;
 		}
-		var def = packetDefsByName[packetName];
+		var def = this.packetDefsByName[packetName];
 
 		var buffer = new Buffer(2048);
 		// Skip 24 bytes for the header plus as many as the subtype.
@@ -140,11 +142,11 @@ class Socket extends net.Socket {
 		});
 
 		if (def.subtypeLength == 1) {
-			dataTypes.int8.pack(buffer, def.subtype );
+			this.type.int8.pack(buffer, def.subtype );
 		} else if (def.subtypeLength == 2) {
-			dataTypes.int16.pack(buffer, def.subtype );
+			this.type.int16.pack(buffer, def.subtype );
 		} else if (def.subtypeLength == 4) {
-			dataTypes.int32.pack(buffer, def.subtype );
+			this.type.int32.pack(buffer, def.subtype );
 		}
 
 		// 	this._debugBuffer(buffer.slice(0,length));

@@ -24,11 +24,28 @@ This does **not** implement a world model, socket reconnection, packet forwardin
 
 In addition to the `net` functionality, the `node-artemis-lib.Socket`s implement:
 
+#### `constructor(options)`
+
+In addition to the options available to `Net.Server`, an asbs Socket accepts `enum` and `bool`:
+
+```js
+var mySock = new asbs.Socket({
+	host: 'localhost'	// from Net.Socket
+	port: 2010,	// from Net.Socket
+	bool: true,	// Cast all known boolean fields into boolean values
+	enum: true	// Cast all known enumerated field into enums
+});
+```
+
+Some developers prefer integer values to booleans (`0` or `1` instead of `true` and `false`), and some prefer integer values to enums (e.g. `0` to `3` instead of `homing`, `nuke`, `emp` and `mine`). Both options default to `true` for maximum prettifycation.
+
 #### event: `packet`
 
 Each time a known game packet is received (and parsed), this event is emmited. The callback should expect two parameters: `packetName` and `packetData`.
 
 `packetName` is self-explaining. `packetData` is a plain javascript object, and its structure mimics the definition in the `packet-defs.js` file. `packetData`s may include arrays and plain objects inside, as per their definitions.
+
+New developers are encouraged to run some of the examples to see how the event payloads look like.
 
 #### `send()`
 
