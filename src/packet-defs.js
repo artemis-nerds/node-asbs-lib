@@ -317,8 +317,8 @@ export function getPacketDefs(options) {
 					diveRise:         type.float,	// 1 = rising, 0 = neutral, -1 = diving
 					reverse:          type.int8,	// Has a weird -1 -ish value sometimes
 					unknown38:        type.int8,
-				//	unknown39:        type.null,	// Apparently this exists but is empty on a full mask
-				//	unknown40:        type:int32
+					unknown39:        type.null,	// Apparently this exists but is empty on a full mask
+// 					unknown40:        type.int32	// -1 ???
 				})                       
 			})
 		},

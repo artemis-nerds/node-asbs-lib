@@ -35,6 +35,22 @@ export function getTypes(options) {
 	if (!('enum' in options)) options.enum = true;
 	if (!('bool' in options)) options.bool = true;
 	
+	// The _null type is a bit weird. The 39th field in the ShipUpdate 
+	//   packet is nothing (not even pointer advance) on a full mask 
+	//   0xffffffff7f) but a 32-bit 0xffffffff otherwise.
+	// Could also be possible that the Artemis code uses 0xffffffff as 
+	//   a fake subtype separator.
+	var _null = {
+		unpack: function(buffer){ 
+			var value = buffer.readUInt32LE(buffer.pointer);
+			if (value === 0xffffffff) {
+				buffer.pointer += 4;
+			}
+			return null; 
+		},
+		pack: function(buffer, value){}
+	}
+	
 	var int8 = {
 		unpack: function(buffer){
 			var value = buffer.readUInt8(buffer.pointer);
@@ -440,6 +456,7 @@ export function getTypes(options) {
 	var tubestatus       = new _enum(int8,  enums.tubeStatus);
 
 	return {
+		null:   _null,
 		int8:   int8,
 		int16:  int16,
 		int32:  int32,
