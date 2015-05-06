@@ -84,7 +84,7 @@ class Socket extends net.Socket {
 			}
 
 			if (!this.packetDefsByType[ header.type ].hasOwnProperty( subtype )) {
-				this.emit('unparsed', new ParseError('Unknown packet subtype: ', header.type.toString(16),subtype.toString(16), ' skipping.', buffer));
+				this.emit('unparsed', new ParseError('Unknown packet subtype: ' + header.type.toString(16) + '/' + subtype.toString(16) + ' skipping.', buffer));
 				buffer.pointer = initialPointer;
 				return this._parseData( remainingBuffer );
 			}
@@ -94,7 +94,7 @@ class Socket extends net.Socket {
 			try {
 				packet       = this.packetDefsByType[header.type][subtype].fields.unpack(buffer);
 			} catch(err) {
-				this.emit('unparsed', new ParseError('Could not parse packet (' + header.type.toString(16) + ',' + subtype.toString(16) + '): ' + err.message, buffer));
+				this.emit('unparsed', new ParseError('Could not parse packet (' + header.type.toString(16) + '/' + subtype.toString(16) + '): ' + err.message, buffer, err.stack));
 				return this._parseData( remainingBuffer );
 			}
 
@@ -149,25 +149,7 @@ class Socket extends net.Socket {
 			this.type.int32.pack(buffer, def.subtype );
 		}
 
-		// 	this._debugBuffer(buffer.slice(0,length));
-
 		this.write( buffer.slice(0,length) );
-	}
-
-
-
-	// Called when there has been a parsing error, so we can keep on guessing how the
-	// protocol looks like.
-	_debugBuffer(buffer) {
-		var str = '';
-		for (var i = 0; i<buffer.length; i++) {
-			var hex = buffer.readUInt8(i).toString(16);
-			if (hex.length < 2) {
-				hex = "0" + hex;
-			}
-			str += hex + ' ';
-		}
-		console.log('Whole packet was:', str);
 	}
 
 }

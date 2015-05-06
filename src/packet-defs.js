@@ -206,18 +206,18 @@ export function getPacketDefs(options) {
 		
 		
 		// Sent by comms
-		commsOutgoing: {
-			type: 0xd672c35f,
-			subtypeLength: 0,
-			subtype: 0,
-			fields: type.struct({
-				targetType: type.commsTarget,
-				targetId:   type.int32,
-				command:    type.int32,	// See https://github.com/rjwut/ArtClientLib/wiki/Artemis-Packet-Protocol%3A-Enumerations
-				commandId:  type.int32,
-				unknown05:  type.int32
-			})
-		},
+// 		commsOutgoing: {
+// 			type: 0xd672c35f,
+// 			subtypeLength: 0,
+// 			subtype: 0,
+// 			fields: type.struct({
+// 				targetType: type.commsTarget,
+// 				targetId:   type.int32,
+// 				command:    type.int32,	// See https://github.com/rjwut/ArtClientLib/wiki/Artemis-Packet-Protocol%3A-Enumerations
+// 				commandId:  type.int32,
+// 				unknown05:  type.int32
+// 			})
+// 		},
 		
 		
 		
@@ -276,7 +276,7 @@ export function getPacketDefs(options) {
 				id: type.int32,
 				data: type.bitmapstruct(5,{
 					weaponsTargetId: type.int32,   // 01
-					impulseSpeed:    type.int32,   // 02
+					impulseSpeed:    type.float,   // 02
 					rudder:          type.float,   // 04   From -0.5 (left) to +0.5 (right)
 					impulseSpeedMax: type.float,   // 08
 					turnRateMax:     type.float,   // 10
@@ -305,18 +305,18 @@ export function getPacketDefs(options) {
 					dockingId:        type.int32,	// ID of the station being docked with
 					redAlert:         type.bool8,
 					unknown27:        type.float,
-					mainScreen:       type.mainscreen32,	// What is being shown on the main screen
+					mainScreen:       type.mainscreen8,	// What is being shown on the main screen
 					beamFrequency:    type.beamfrequency8,
 					coolantAvailable: type.int32,
 					scienceTargetId:  type.int32,
 					captainTargetId:  type.int32,
 					
 					driveType:        type.int16,
-					scanningTargetId: type.float,
+					scanningTargetId: type.int32,
 					scanningProgress: type.float,
-					reverse:          type.int32,	// Has a weird -1 -ish value sometimes
 					diveRise:         type.float,	// 1 = rising, 0 = neutral, -1 = diving
-					unknown38:        type.int16,
+					reverse:          type.int8,	// Has a weird -1 -ish value sometimes
+					unknown38:        type.int8,
 	// 				unknown39:        type.int32
 				})                       
 			})
@@ -582,10 +582,11 @@ export function getPacketDefs(options) {
 					unknown09: type.int32,
 					unknown10: type.int32,
 					unknown11: type.int32,
-					unknown12: type.int16,
-					unknown13: type.int16,
-					unknown14: type.int16,
-					unknown15: type.int16
+					unknown12: type.int32,
+					unknown13: type.int8,
+					unknown14: type.int8,
+					unknown15: type.int16,
+					//unknown16: type.int16
 				})                       
 			})
 		},
@@ -1042,7 +1043,7 @@ export function getPacketDefs(options) {
 			subtypeLength: 4,
 			subtype: 0x01,	// 1
 			fields: type.struct({
-				view: type.mainscreen	// From 0 to 6.
+				view: type.mainscreen32	// From 0 to 6.
 			})
 		},
 		

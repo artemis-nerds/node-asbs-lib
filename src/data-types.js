@@ -139,7 +139,7 @@ export function getTypes(options) {
 				console.warn("String does not end with 0x0000!!");
 			}
 			buffer.pointer += strLen + 4;
-	// 					console.warn ("Read string:" , str);
+// 			console.warn ("Read string:" , str);
 			return str;
 		},
 		pack: function(buffer, str){
@@ -204,8 +204,9 @@ export function getTypes(options) {
 		unpack(buffer){
 			var value = {};
 			for (var i=0; i<this.fieldCount; i++)  {
+// 				console.log('struct, ', i, ' pointer ', buffer.pointer, ' value ' , value[ this.fieldNames[i] ], ' type ', this.fieldTypes[i]);
 				value[ this.fieldNames[i] ] = this.fieldTypes[i].unpack(buffer);
-	// 		console.log('struct, ', i, ' pointer ', buffer.pointer, ' value ' , value[ this.fieldNames[i] ]);
+// 				console.log('struct, ', i, ' pointer ', buffer.pointer, ' value ' , value[ this.fieldNames[i] ], ' type ', this.fieldTypes[i]);
 			}
 			return value;
 		}

@@ -15,7 +15,7 @@ function debugBuffer(buffer) {
 
 class ParseError extends Error {
 
-	constructor(message, buffer) {
+	constructor(message, buffer, stack) {
 		super();
 		Error.captureStackTrace(this, this.constructor);
 
@@ -23,6 +23,7 @@ class ParseError extends Error {
 		Object.defineProperties(this, {
 			message: {value: message},
 			buffer:  {value: buffer}
+			_stack:  {value: stack}
 		});
 	}
 
@@ -34,7 +35,7 @@ class ParseError extends Error {
 		return this.message +
 			'\nBuffer data is:\n' +
 			debugBuffer(this.buffer) + '\n' +
-			this.stack;
+			this._stack;
 	}
 
 	debugBuffer() {

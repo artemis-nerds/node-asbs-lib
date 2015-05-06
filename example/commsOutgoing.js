@@ -18,3 +18,4 @@ mySock.send('gameMasterMessage', {
 });
 
 
+mySock.end();
