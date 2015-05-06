@@ -1,6 +1,6 @@
 {
   "name": "asbs-lib",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Low-level interface library to Artemis SBS game servers/clients",
   "main": "lib/index.js",
   "repository": {
