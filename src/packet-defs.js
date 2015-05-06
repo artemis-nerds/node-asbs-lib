@@ -263,7 +263,7 @@ export function getPacketDefs(options) {
 			subtype: 0x00,	//	0
 			fields: type.struct({})
 		},
-			
+		
 		
 		
 		
@@ -307,7 +307,7 @@ export function getPacketDefs(options) {
 					unknown27:        type.float,
 					mainScreen:       type.mainscreen8,	// What is being shown on the main screen
 					beamFrequency:    type.beamfrequency8,
-					coolantAvailable: type.int32,
+					coolantAvailable: type.int8,
 					scienceTargetId:  type.int32,
 					captainTargetId:  type.int32,
 					
@@ -316,7 +316,7 @@ export function getPacketDefs(options) {
 					scanningProgress: type.float,
 					diveRise:         type.float,	// 1 = rising, 0 = neutral, -1 = diving
 					reverse:          type.int8,	// Has a weird -1 -ish value sometimes
-					unknown38:        type.int8,
+					unknown38:        type.null,
 					unknown39:        type.null,	// Apparently this exists but is empty on a full mask
 // 					unknown40:        type.int32	// -1 ???
 				})                       
@@ -426,7 +426,7 @@ export function getPacketDefs(options) {
 		
 		
 		
-		// Upgrades status of the ship: which upgrades are aavailable.
+		// Upgrades status of the ship: which upgrades are available.
 		
 		// This is all guesswork, I haven't seen any changing values in this packet.
 		
@@ -848,7 +848,7 @@ export function getPacketDefs(options) {
 			subtypeLength: 4,
 			subtype: 0x04,	// 4
 			fields: type.struct({
-				paused: type.int32
+				paused: type.bool32
 			})
 		},
 		
@@ -889,12 +889,13 @@ export function getPacketDefs(options) {
 		},
 		
 
+		// Received when a ship takes damage
 		unknownGamePacket08: {
 			type: 0xf754c8fe,
 			subtypeLength: 4,
 			subtype: 0x08,	// 8
 			fields: type.struct({
-				unknown: type.int32
+				unknown: type.int32 // Observed 1120403456
 			})
 		},
 		

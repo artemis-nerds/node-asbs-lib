@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/ivansanchez/node-asbs-lib.git"
+    "url": "git://github.com/artemis-nerds/node-asbs-lib.git"
   },
   "keywords": [
     "artemis",
@@ -18,9 +18,9 @@
   "author": "Iván Sánchez Ortega <ivan@sanchezortega.es>",
   "license": "Beerware",
   "bugs": {
-    "url": "https://github.com/ivansanchez/node-asbs-lib/issues"
+    "url": "https://github.com/artemis-nerds/node-asbs-lib/issues"
   },
-  "homepage": "https://github.com/ivansanchez/node-asbs-lib",
+  "homepage": "https://github.com/artemis-nerds/node-asbs-lib",
   "dependencies": {
     "babel": "^5.1.11",
     "gobble": "^0.9.2",

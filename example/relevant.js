@@ -22,19 +22,19 @@ mySock.on('error', function(err) {
 mySock.on('packet', function(packetName, packet){
 	// Ignore common packets.
 	if (
-// 	    packetName === 'playerShip' ||
+	    packetName === 'playerShip' ||
 	    packetName === 'npc'     ||
-// 	    packetName === 'mine'    ||
-// 	    packetName === 'nebula'  ||
-// 	    packetName === 'asteroid'||
-// 	    packetName === 'anomaly' ||
-// 	    packetName === 'drone'   ||
-// 	    packetName === 'whale'   ||
-// 	    packetName === 'intel'   ||
-// 	    packetName === 'weapons' ||
-// 	    packetName === 'upgrades' ||
-// 	    packetName === 'damConInfo' ||
-// 	    packetName === 'beamFired' ||
+	    packetName === 'mine'    ||
+	    packetName === 'nebula'  ||
+	    packetName === 'asteroid'||
+	    packetName === 'anomaly' ||
+	    packetName === 'drone'   ||
+	    packetName === 'whale'   ||
+	    packetName === 'intel'   ||
+	    packetName === 'weapons' ||
+	    packetName === 'upgrades' ||
+	    packetName === 'damConInfo' ||
+	    packetName === 'beamFired' ||
 	    packetName === 'noUpdate')
 		return;
 		

@@ -43,7 +43,7 @@ export function getTypes(options) {
 	var _null = {
 		unpack: function(buffer){ 
 			var value = buffer.readUInt32LE(buffer.pointer);
-			if (value === 0xffffffff) {
+			if (value === 0xffffffff || value === 0) {
 				buffer.pointer += 4;
 			}
 			return null; 
@@ -307,6 +307,31 @@ export function getTypes(options) {
 				}
 			}
 		}
+		
+		
+		// Like unpack(), only MUCH verbosier. Intended for debug only.
+		debugUnpack(buffer) {
+			var bitmap = Array(this.bitmapLength);
+			for (var i=0; i<this.bitmapLength; i++)  {
+				bitmap[i] = (int8.unpack(buffer));
+				console.log('Bitmap %d: %s', i, bitmap[i].toString(2));
+			}
+			var value = {};
+			var i = 0;
+			for (var byte=0; byte<this.bitmapLength; byte++)  {
+				for (var bit=0; bit<8 && i< this.fieldCount; bit++)  {
+					if (bitmap[byte] & 1<<bit ) {
+						value[ this.fieldNames[i] ] = this.fieldTypes[i].unpack(buffer);
+						console.log('Bit %d (%s) is = ', i, this.fieldNames[i], value[ this.fieldNames[i] ]);
+					} else {
+						console.log('Bit %d (%s) is off', i, this.fieldNames[i]);
+					}
+					i++;
+				}
+			}
+			return value;
+		}
+
 
 	}
 
