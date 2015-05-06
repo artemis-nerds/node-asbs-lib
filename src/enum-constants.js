@@ -76,19 +76,20 @@ export const entityType = {
 	0x01: 'player',
 	0x02: 'weapons',
 	0x03: 'engineering',
-	0x04: 'npc',
-	0x05: 'base',
-	0x06: 'mine',
-	0x07: 'anomaly',
-	// 0x08: unknown
-	0x09: 'nebula',
-	0x0a: 'torpedo',
-	0x0b: 'blackHole',
-	0x0c: 'asteroid',
-	0x0d: 'mesh',
-	0x0e: 'monster',
-	0x0f: 'whale',
-	0x10: 'drone'
+	0x04: 'upgrades',
+	0x05: 'npc',
+	0x06: 'base',
+	0x07: 'mine',
+	0x08: 'anomaly',
+//	0x09: unknown
+	0x0a: 'nebula',
+	0x0b: 'torpedo',
+	0x0c: 'blackHole',
+	0x0d: 'asteroid',
+	0x0e: 'mesh',
+	0x0f: 'monster',
+	0x10: 'whale',
+	0x11: 'drone'
 };
 
 export const ordnance = {
