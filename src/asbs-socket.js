@@ -105,7 +105,7 @@ class Socket extends net.Socket {
 
 		if (buffer.pointer !== initialPointer + header.packetLength) {
 			var bytesRead = buffer.pointer - initialPointer;
-			this.emit('unparsed', new ParseError('Packet length mismatch ( expected ' + header.packetLength + ' read ' + bytesRead + ')', buffer));
+			this.emit('unparsed', new ParseError('Packet length mismatch ( expected ' + header.packetLength + ' read ' + bytesRead + ')', buffer.slice(initialPointer, Math.max(bytesRead, header.packetLength))));
 		}
 
 		return this._parseData( remainingBuffer );

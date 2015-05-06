@@ -317,7 +317,8 @@ export function getPacketDefs(options) {
 					diveRise:         type.float,	// 1 = rising, 0 = neutral, -1 = diving
 					reverse:          type.int8,	// Has a weird -1 -ish value sometimes
 					unknown38:        type.int8,
-	// 				unknown39:        type.int32
+				//	unknown39:        type.null,	// Apparently this exists but is empty on a full mask
+				//	unknown40:        type:int32
 				})                       
 			})
 		},
@@ -664,7 +665,7 @@ export function getPacketDefs(options) {
 			subtype: 0x0b,	// 11
 			fields: type.struct({
 				id: type.int32,
-				data: type.bitmapstruct(1,{
+				data: type.bitmapstruct(2,{
 					posX:         type.float,
 					posY:         type.float,
 					posZ:         type.float,
@@ -723,6 +724,8 @@ export function getPacketDefs(options) {
 		
 		
 		//// FIXME: Add subtype 0x0e, presumably generic mesh.
+		//// Sample packet type+subtype+payload:
+		//// fe c8 54 f7 0e 00 00 00 00 00 00 00 94 bb 10 3e
 
 		monster: {
 			type: 0x80803df9,
