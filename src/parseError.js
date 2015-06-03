@@ -22,7 +22,7 @@ class ParseError extends Error {
 		// Makes sure the values act like proper Error values
 		Object.defineProperties(this, {
 			message: {value: message},
-			buffer:  {value: buffer}
+			buffer:  {value: buffer},
 			_stack:  {value: stack}
 		});
 	}
