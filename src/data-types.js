@@ -87,6 +87,18 @@ export function getTypes(options) {
 		}
 	}
 
+	var int64 = {
+		unpack: function(buffer){
+			var value = buffer.readUInt64LE(buffer.pointer);
+			buffer.pointer += 8;
+			return value;
+		},
+		pack: function(buffer, value){
+			buffer.writeUInt64LE(value || 0, buffer.pointer);
+			buffer.pointer += 8;
+		}
+	}
+
 	var bool8, bool16, bool32;
 	if (options.bool) {
 		bool8 = {
