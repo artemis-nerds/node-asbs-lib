@@ -739,13 +739,13 @@ export function getPacketDefs(options) {
 					unknown08:   type.int32,
 				
 					unknown09:   type.int32,
-					unknown10:   type.int32,
+					unknown10:   type.int64, //Long
 					shipName:    type.string,
 					meshFile:    type.string,
 					textureFile: type.string,
 					unknown14:   type.int32,
 					unknown15:   type.int16,
-					unknown16:   type.bool8,
+					unknown16:   type.int8,
 				
 					colorR:      type.float,
 					colorG:      type.float,
