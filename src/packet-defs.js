@@ -721,12 +721,47 @@ export function getPacketDefs(options) {
 				})                       
 			})
 		},
-		
-		
-		//// FIXME: Add subtype 0x0e, presumably generic mesh.
-		//// Sample packet type+subtype+payload:
-		//// fe c8 54 f7 0e 00 00 00 00 00 00 00 94 bb 10 3e
 
+		genericMesh: {
+		  	type: 0x80803df9,
+		  	subtypeLength: 1,
+		  	subtype: 0x0e,	// 14
+		  	fields: type.struct({
+			    	id: type.int32,
+			    	data: type.bitmapstruct(1,{
+					posX:        type.float,
+					posY:        type.float,
+					posZ:        type.float,
+					unknown04:   type.int32,
+					unknown05:   type.int32,
+					unknown06:   type.int64, //Long
+					unknown07:   type.int32,
+					unknown08:   type.int32,
+				
+					unknown09:   type.int32,
+					unknown10:   type.int32,
+					shipName:    type.string,
+					meshFile:    type.string,
+					textureFile: type.string,
+					unknown14:   type.int32,
+					unknown15:   type.int16,
+					unknown16:   type.bool8,
+				
+					colorR:      type.float,
+					colorG:      type.float,
+					colorB:      type.float,
+					forShields:  type.float,
+					aftShields:  type.float,
+					unknown22:   type.int32,
+					unknown23:   type.int32,
+					unknown24:   type.int32,
+					
+					unknown25:   type.int32,
+					unknown26:   type.int32,
+		    		})
+			})
+		},
+		
 		monster: {
 			type: 0x80803df9,
 			subtypeLength: 1,
