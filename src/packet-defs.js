@@ -234,8 +234,8 @@ export function getPacketDefs(options) {
 				firedFromOwnShip: type.bool32,
 				damage:    type.int32,
 				beamPort:  type.int32,	// Usually 0 is starboard arc and 1 is portside arc
-				unknown05: type.int32,	// Observed 4
-				unknown06: type.int32,	// Observed 1 and 4
+				unknown05: type.int32,	// Possibly source faction
+				unknown06: type.int32,	// Possibly target faction
 				sourceId:  type.int32,
 				targetId:  type.int32,
 				impactX:   type.float,
@@ -333,7 +333,7 @@ export function getPacketDefs(options) {
 			subtype: 0x02,	// 2
 			fields: type.struct({
 				id: type.int32,
-				data: type.bitmapstruct(3,{
+				data: type.bitmapstruct(4,{
 					// tubeUsed is 0 if unloaded, 2 if loading, 1 if loaded, 3 if unloading.
 					// 0 -> 2 -> 1 -> 3 -> 0 (unloading)
 					// 0 -> 2 -> 1 -> 0 (firing)
@@ -348,20 +348,21 @@ export function getPacketDefs(options) {
 					storesNukes:  type.int8,
 					storesMines:  type.int8,
 					storesEMPs:   type.int8,
-					unknown05:    type.int8,
+					storesPShock: type.int8,
+					unknown06:    type.int8,
 					unloadTime1:  type.float,
 					unloadTime2:  type.float,
 					unloadTime3:  type.float,
+					
 					unloadTime4:  type.float,
-
 					unloadTime5:  type.float,
 					unloadTime6:  type.float,
 					tubeUsed1:    type.tubestatus,
 					tubeUsed2:    type.tubestatus,
 					tubeUsed3:    type.tubestatus,
 					tubeUsed4:    type.tubestatus,
-					tubeUsed5:    type.tubestatus,
-
+					
+					tubeUsed5:     type.tubestatus,
 					tubeUsed6:     type.tubestatus,
 					tubeContents1: type.ordnance8,
 					tubeContents2: type.ordnance8,
@@ -369,7 +370,6 @@ export function getPacketDefs(options) {
 					tubeContents4: type.ordnance8,
 					tubeContents5: type.ordnance8,
 					tubeContents6: type.ordnance8,
-	// 				unknown23:     type.int8
 									
 					// Last byte of the bitmapstruct seems to be unused.
 				})                       
@@ -426,57 +426,113 @@ export function getPacketDefs(options) {
 		
 		
 		
-		// Upgrades status of the ship: which upgrades are available.
+		// Upgrades status of the ship: which upgrades are available/active.
 		
-		// This is all guesswork, I haven't seen any changing values in this packet.
-		
-		// The game UI displays 28 possible upgrades.
-		// There is a 7-byte bitmask with 56 bits (28*2). 
-		// Then there is a 4-byte word with 28 (out of 32) bits set to 1. Maybe upgrades possible for this ship?
-		// Then, there are 28 4-byte words, all zeroed out. Are these one 4-byte or 2 2-bytes data fields per upgrade?
-		// How does this map to the bitmap??
 		upgrades: {
 			type: 0x80803df9,
 			subtypeLength: 1,
 			subtype: 0x04,	// 4
 			fields: type.struct({
 				id: type.int32,
-				data: type.bitmapstruct(7,{
-					mask:      type.int32,
-					unknown02: type.int32,
-					unknown03: type.int32,
-					unknown04: type.int32,
-					unknown05: type.int32,
-					unknown06: type.int32,
-					unknown07: type.int32,
-					unknown08: type.int32,
+				data: type.bitmapstruct(11,{
+					unknown01: type.int8,
+					unknown02: type.int8,
+					unknown03: type.int8,
+					unknown04: type.int8,
+					unknown05: type.int8,
+					unknown06: type.int8,
+					unknown07: type.int8,
+					unknown08: type.int8,
 					
-					unknown09: type.int32,
-					unknown10: type.int32,
-					unknown11: type.int32,
-					unknown12: type.int32,
-					unknown13: type.int32,
-					unknown14: type.int32,
-					unknown15: type.int32,
-					unknown16: type.int32,
+					unknown09: type.int8,
+					unknown10: type.int8,
+					unknown11: type.int8,
+					unknown12: type.int8,
+					unknown13: type.int8,
+					unknown14: type.int8,
+					unknown15: type.int8,
+					unknown16: type.int8,
 					
-					unknown17: type.int32,
-					unknown18: type.int32,
-					unknown19: type.int32,
-					unknown20: type.int32,
-					unknown21: type.int32,
-					unknown22: type.int32,
-					unknown23: type.int32,
-					unknown24: type.int32,
+					unknown17: type.int8,
+					unknown18: type.int8,
+					unknown19: type.int8,
+					unknown20: type.int8,
+					unknown21: type.int8,
+					unknown22: type.int8,
+					unknown23: type.int8,
+					unknown24: type.int8,
 					
-					unknown25: type.int32,
-					unknown26: type.int32,
-					unknown27: type.int32,
-					unknown28: type.int32,
-					unknown29: type.int32
-	// 				unknown30: type.int32,
-	// 				unknown31: type.int32,
-	// 				unknown31: type.int32
+					unknown25: type.int8,
+					unknown26: type.int8,
+					unknown27: type.int8,
+					unknown28: type.int8,   /// 28 upgrades
+					infusionPCoilCount: type.int8,	// 5min +10% engines
+					unknown30: type.int8,
+					tauronFocuserCount: type.int8,	// 5min +10% firing and reload speed
+					carpactionCoilCount: type.int8,	// 5min +10% shield recharge
+					
+					unknown33: type.int8,
+					cetrociteCrystalCount: type.int8,	// Coolant reserves, 5min +10% heat cooldown
+					unknown35: type.int8,
+					unknown36: type.int8,
+					doubleAgentCount: type.int8,	// One ship auto surrenders
+					unknown38: type.int8,
+					unknown39: type.int8,
+					unknown40: type.int8,
+					
+					unknown41: type.int8,
+					unknown42: type.int8,
+					unknown43: type.int8,
+					unknown44: type.int8,
+					unknown45: type.int8,
+					unknown46: type.int8,
+					unknown47: type.int8,
+					unknown48: type.int8,
+					
+					unknown49: type.int8,
+					unknown50: type.int8,
+					unknown51: type.int8,
+					unknown52: type.int8,
+					unknown53: type.int8,
+					unknown54: type.int8,
+					unknown55: type.int8,
+					unknown56: type.int8,	// 28 * 2
+					
+					infusionPCoilSeconds: type.int16,
+					unknown58: type.int16,
+					tauronFocuserSeconds: type.int16,
+					carpactionCoilSeconds: type.int16,
+					unknown61: type.int16,
+					unknown62: type.int16,
+					unknown63: type.int16,
+					unknown64: type.int16,
+					
+					doubleAgentSeconds: type.int16,
+					unknown66: type.int16,
+					unknown67: type.int16,
+					unknown68: type.int16,
+					unknown69: type.int16,
+					unknown70: type.int16,
+					unknown71: type.int16,
+					unknown72: type.int16,
+					
+					unknown73: type.int16,
+					unknown74: type.int16,
+					unknown75: type.int16,
+					unknown76: type.int16,
+					unknown77: type.int16,
+					unknown78: type.int16,
+					unknown79: type.int16,
+					unknown80: type.int16,
+					
+					unknown81: type.int16,
+					unknown82: type.int16,
+					unknown83: type.int16,
+					unknown84: type.int16,	// 28 * 3 
+// 					unknown85: type.null,
+// 					unknown86: type.null,
+// 					unknown87: type.null,
+// 					unknown88: type.null,
 				})                       
 			})
 		},
@@ -563,7 +619,7 @@ export function getPacketDefs(options) {
 		
 		
 		
-		// Space stations
+		// Space stations/bases
 		station: {
 			type: 0x80803df9,
 			subtypeLength: 1,
@@ -574,7 +630,7 @@ export function getPacketDefs(options) {
 					shipName:   type.string,
 					forShields: type.float,
 					aftShields: type.float,
-					unknown04:  type.int32,	// Looks like an incremental 0-based station ID
+					unknown04:  type.int32,	// Autoincrement
 					shipType:   type.int32,
 					posX:       type.float,
 					posY:       type.float,
@@ -617,8 +673,8 @@ export function getPacketDefs(options) {
 		
 		
 
-		
-		anomaly: {
+		// Anomalies are now pickups
+		pickup: {
 			type: 0x80803df9,
 			subtypeLength: 1,
 			subtype: 0x08,	// 8
@@ -628,7 +684,7 @@ export function getPacketDefs(options) {
 					posX:      type.float,
 					posY:      type.float,
 					posZ:      type.float,
-					shipName:  type.string,
+					unknown04: type.int32,	// Observed autoincrement
 					unknown05: type.int32,
 					unknown06: type.int32,
 					unknown07: type.int32,
@@ -636,6 +692,7 @@ export function getPacketDefs(options) {
 				})                       
 			})
 		},
+		
 			
 		
 		//// FIXME: Add subtype 0x09
@@ -669,9 +726,9 @@ export function getPacketDefs(options) {
 					posX:         type.float,
 					posY:         type.float,
 					posZ:         type.float,
-					speedX:       type.int32,
-					speedY:       type.int32,
-					speedZ:       type.int32,
+					speedX:       type.float,
+					speedY:       type.float,
+					speedZ:       type.float,
 					ordnance:     type.ordnance32,
 					unknown08:    type.int32
 				})                       
@@ -727,57 +784,40 @@ export function getPacketDefs(options) {
 		//// Sample packet type+subtype+payload:
 		//// fe c8 54 f7 0e 00 00 00 00 00 00 00 94 bb 10 3e
 
-		monster: {
+		
+		//// Monsters and shipwrecks and whales share the same object ID
+		fauna: {
 			type: 0x80803df9,
 			subtypeLength: 1,
 			subtype: 0x0f,	// 15
 			fields: type.struct({
 				id: type.int32,
-				data: type.bitmapstruct(1,{
+				data: type.bitmapstruct(2,{
 					posX:      type.float,
 					posY:      type.float,
 					posZ:      type.float,
 					shipName:  type.string,
-					unknown05: type.int32,
-					unknown06: type.int32,
-					unknown07: type.int32,
-					unknown08: type.int32
+					pitch:     type.float,
+					yaw:       type.float,
+					roll:      type.float,
+					unknown08: type.int32,	// Seen 3, 7
+
+					unknown09: type.int32,	// Seen 0, then 4 when wreck scanned
+					unknown10: type.int32,	// Seen 0, then 4 when wreck scanned a second time
+					unknown11: type.int32,	// Seen 18
+					unknown12: type.float,
+					unknown13: type.float,
+					unknown14: type.float,
+// 					unknown15: type.int32,
+// 					unknown16: type.int32,
 				})                       
 			})
 		},
 		
 		
 
-		
-		whale: {
-			type: 0x80803df9,
-			subtypeLength: 1,
-			subtype: 0x10,	// 16
-			fields: type.struct({
-				id: type.int32,
-				data: type.bitmapstruct(2,{
-					shipName:  type.string,
-					unknown02: type.int32,
-					unknown03: type.int32,
-					posX:      type.float,
-					posY:      type.float,
-					posZ:      type.float,
-					pitch:     type.float,
-					roll:      type.int32,
-					
-					heading:   type.float,
-					unknown09: type.float,
-					unknown10: type.float,
-					unknown11: type.float,	// Observed from 0 to 0.855
-					unknown12: type.float,	// Observed from 0.5 to 1.36
-				})                       
-			})
-		},
-		
-			
-		
-		
-		
+		/// TODO: Now that whales share the monster packet, check
+		///   that drones still are at 0x11.
 		drone: {
 			type: 0x80803df9,
 			subtypeLength: 1,
@@ -895,7 +935,7 @@ export function getPacketDefs(options) {
 			subtypeLength: 4,
 			subtype: 0x08,	// 8
 			fields: type.struct({
-				unknown: type.int32 // Observed 1120403456
+				unknown: type.float // Observed 1120403456
 			})
 		},
 		
